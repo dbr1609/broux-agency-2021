@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { graphql } from 'gatsby'
+import { GatsbyImage, getImage } from 'gatsby-plugin-image'
 import Layout from '../../components/layout'
 const ArtistPage = ({data: {wpArtist: {artistMeta: artist}}}) => {
+  const image = getImage(artist.profilepicture.localFile)
   return (
     <Layout pageTitle="Artiesten Template">
       <div>
-      <h3>{artist.artistName}</h3>
+      <GatsbyImage image={image} alt={artist.profilepicture.altText} />
       <h1>{artist.firstName} {artist.lastName}</h1>
       <div dangerouslySetInnerHTML={{__html: artist.description}} />
       <p>Email: {artist.email}</p>
@@ -20,8 +22,8 @@ const ArtistPage = ({data: {wpArtist: {artistMeta: artist}}}) => {
 }
 
 export const query = graphql`
-  query ($id: String) {
-    wpArtist(id: {eq: $id}) {
+  query MyQuery($id: String) {
+    wpArtist(id: { eq: $id }) {
       artistMeta {
         firstName
         lastName
@@ -33,6 +35,14 @@ export const query = graphql`
         phoneNumber
         shirtSize
         shoeSize
+        profilepicture {
+          localFile {
+            childImageSharp {
+              gatsbyImageData(placeholder: BLURRED)
+            }
+          }
+          altText
+        }
       }
     }
   }
